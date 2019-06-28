@@ -4,14 +4,14 @@
         <mt-swipe :auto="4000">
             <!-- 在组件中，使用v-for循环一定要使用key -->
             <mt-swipe-item v-for="item in lunbotuList" :key="item.id">
-                <img :src="item.img_url" alt="item.title">
+                <img :src="item.img" alt="item.url">
             </mt-swipe-item>
         </mt-swipe>
         <!-- 九宫格 到 六宫格 的改造过程 -->
         <ul class="mui-table-view mui-grid-view mui-grid-9">
-            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
+            <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><router-link to="/home/newslist">
                     <img src="../../images/menu1.png" alt="">
-                    <div class="mui-media-body">新闻资讯</div></a></li>
+                    <div class="mui-media-body">新闻资讯</div></router-link></li>
             <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3"><a href="#">
                     <img src="../../images/menu2.png" alt="">
                     <div class="mui-media-body">图片分享</div></a></li>
@@ -43,9 +43,9 @@ export default {
     },
     methods: {
         getLunbotu(){   // 获取轮播图数据的方法
-            this.$http.get('http://www.liulongbin.top:3005/api/getnewslist').then(result => {
+            this.axios.get('/api/getlunbo').then(result => {
                 // console.log(result.data)
-                if(result.data.status ===0 ){
+                if(result.data.status === 0 ){
                     // 成功了
                     this.lunbotuList = result.data.message
                 }else {

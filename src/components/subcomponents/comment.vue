@@ -2,15 +2,15 @@
     <div class="cmt-container">
         <h3>发表评论</h3>
         <hr>
-        <textarea placeholder="请输入要评论的内容（最多120字）" maxlength="120"></textarea>
-        <mt-button type="primary" size="large">发表评论</mt-button>
+        <textarea placeholder="请输入要评论的内容（最多120字）" maxlength="120" v-model="msg"></textarea>
+        <mt-button type="primary" size="large" @click="postComment">发表评论</mt-button>
         <div class="cmt-list">
             <div class="cmt-item" v-for="(item, i) in comments" :key="i">
                 <div class="cmt-title">
                     第{{ i+1 }}楼&nbsp;&nbsp;用户：{{ item.user_name }}发表时间：{{ item.add_time | dataFormat }}
                 </div>                
                 <div class="cmt-body">
-                    {{ item.content == ""? "无评论":item.content }}
+                    {{ item.content == undefined? "无评论":item.content }}
                 </div>
             </div>
         </div>
@@ -18,12 +18,14 @@
     </div>
 </template>
 <script>
-import { Toast } from 'mint-ui'
+import { Toast } from "mint-ui"
+import qs from 'qs'
 export default {
     data(){
         return {
             pageIndex: 1,    // 默认展示第1页数据
-            comments: []
+            comments: [],   // 所有的评论数据
+            msg: '' // 评论输入的内容
         }
     },
     created(){
@@ -44,6 +46,40 @@ export default {
         getMore(){
             this.pageIndex ++ 
             this.getComments()
+        },
+        postComment(){ 
+            // 校验是否为空对象
+            if (this.msg.trim().length === 0 ){
+                return this.$toast("评论内容不能为空")
+            }
+
+            // 发表评论
+            // 请求的方式
+            // 请求的URL地址
+            // 提交给服务器的数据对象 { content: this.msg }
+            // 定义提交时候，表单中数据的格式 (application / x-www-form-urlencoded)
+            const data = { content: this.msg.trim() }
+            const options = {
+                method: 'post',
+                headers: { 'content-type': 'application/x-www-form-urlencoded' },
+                data: qs.stringify(data),
+                url: '/api/postcomment/' + this.id
+            }
+            this.axios(options).then(result => {
+                // console.log(result)
+                if(result.data.status === 0 ){
+                    // 1. 拼接出一个评论对象
+                    var cmt = {
+                        user_name: '匿名用户', 
+                        add_time: Date.now(), 
+                        content: this.msg.trim() 
+                    }
+                    this.comments.unshift(cmt)
+                    this.msg = ''
+                }else {
+                    this.$toast('评论发表失败')
+                }
+            })
         }
     },
     props:["id"]

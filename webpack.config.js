@@ -40,12 +40,15 @@ module.exports = {
                 loader: 'babel-loader',
                 options: {
                   presets: ['@babel/preset-env'],
-                  plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-transform-runtime", ["component", 
+                  plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-transform-runtime",
+                  ["@babel/plugin-transform-modules-commonjs", { "strictMode": false }], 
+                  ["component", 
                     {
                       "libraryName": "mint-ui",
                       "style": true
-                    }
-                  ]]// min-ui 官网中 component 后面写的是一个数组是错误的，应该直接用一个对象
+                    }// min-ui 官网中 component 后面写的是一个数组是错误的，应该直接用一个对象
+                  ]],
+                //   ignore: ["./src/lib/mui/js/*.js"]
                 }
             }, 
         }, // 配置 Babel 来转换高级的ES语法

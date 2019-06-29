@@ -2,9 +2,10 @@
 import Vue from 'vue'
 // 1.1 导入路由的包
 import VueRouter from 'vue-router'
-
 // 按需导入 Mint-UI 中的组件
-import { Header, Swipe, SwipeItem, Button } from 'mint-ui'
+// import { Header, Swipe, SwipeItem, Button, Lazyload } from 'mint-ui'
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
 
 import moment from 'moment'
 
@@ -23,14 +24,22 @@ import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 // 设置请求的根路径
 axios.defaults.baseURL = 'http://www.liulongbin.top:3005';
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 // 1.2 安装路由
 Vue.use(VueRouter)
+Vue.use(MintUI)
+import { Toast } from 'mint-ui'
+Vue.prototype.$toast = Toast;
+// Vue.component(Header.name, Header)
+// Vue.component(Swipe.name, Swipe)
+// Vue.component(SwipeItem.name, SwipeItem)
+// Vue.component(Button.name, Button)
+// Vue.use(Lazyload)
 
-Vue.component(Header.name, Header)
-Vue.component(Swipe.name, Swipe)
-Vue.component(SwipeItem.name, SwipeItem)
-Vue.component(Button.name, Button)
+// 安装 图片预览 插件
+import VuePreview from 'vue-preview'
+Vue.use(VuePreview)
 
 // 定义全局的过滤器
 Vue.filter('dataFormat', function(dataStr, pattern="YYYY-MM-DD HH:mm:ss"){

@@ -1,52 +1,79 @@
 <template>
     <div class="goods-list">
-        <div class="goods-item">
-            <img src="http://gw.alicdn.com/bao/uploaded/i4/2616108292/O1CN01p5IQ0i2B7mfUkTEf1_!!2616108292.jpg">
-            <h1 class="title">华为手机</h1>
+        <!-- <router-link class="goods-item" v-for="item in goodslist" :key=item.id 
+        :to="'/home/goodsinfo/' + item.id" tag="div">
+            <img :src="item.img_url">
+            <h1 class="title">{{ item.title }}</h1>
             <div class="info">
                 <p class="price">
-                    <span class="now">￥2195</span>
-                    <span class="old">￥2499</span>
+                    <span class="now">￥{{ item.sell_price }}</span>
+                    <span class="old">￥{{ item.market_price }}</span>
                 </p>
                 <p class="sell">
                     <span>热卖中</span>
-                    <span>剩60件</span>
+                    <span>剩{{ item.stock_quantity }}件</span>
                 </p>
             </div>
-        </div>
-        <div class="goods-item">
-            <img src="http://gw.alicdn.com/bao/uploaded/i4/2616108292/O1CN01p5IQ0i2B7mfUkTEf1_!!2616108292.jpg">
-            <h1 class="title">华为手机2222222222222222222222</h1>
+        </router-link> -->
+
+        <!-- 在网页中，有两种跳转方式 -->
+        <!-- 方式1： 使用 a 标签 的形式 叫做 标签跳转 -->
+        <!-- 方式2： 使用 window.location.href 的形式，叫做 编程式导航 -->
+        <div class="goods-item" v-for="item in goodslist" :key=item.id @click="goDetail(item.id)">
+            <img :src="item.img_url">
+            <h1 class="title">{{ item.title }}</h1>
             <div class="info">
                 <p class="price">
-                    <span class="now">￥2195</span>
-                    <span class="old">￥2499</span>
+                    <span class="now">￥{{ item.sell_price }}</span>
+                    <span class="old">￥{{ item.market_price }}</span>
                 </p>
                 <p class="sell">
                     <span>热卖中</span>
-                    <span>剩60件</span>
+                    <span>剩{{ item.stock_quantity }}件</span>
                 </p>
             </div>
         </div>
-        <div class="goods-item">
-            <img src="http://gw.alicdn.com/bao/uploaded/i4/2616108292/O1CN01p5IQ0i2B7mfUkTEf1_!!2616108292.jpg">
-            <h1 class="title">华为手机</h1>
-            <div class="info">
-                <p class="price">
-                    <span class="now">￥2195</span>
-                    <span class="old">￥2499</span>
-                </p>
-                <p class="sell">
-                    <span>热卖中</span>
-                    <span>剩60件</span>
-                </p>
-            </div>
-        </div>
+        <mt-button type="danger" size="large" @click="getMore">加载更多</mt-button>
     </div>
 </template>
 <script>
 export default {
-    
+    data(){
+        return {    // data 是往自己组件内部，挂载一些私有数据
+            pageindex: 1,   // 分页的页数
+            goodslist: [],  // 存放商品列表的数组
+        }
+    },
+    created(){
+        this.getGoodsList()
+    },
+    methods: {
+        getGoodsList(){
+            // 分析：获取商品列表
+            this.axios.get('/api/getgoods?pageindex=' + this.pageindex).then(result => {
+                if(result.data.status == 0){
+                    this.goodslist = this.goodslist.concat(result.data.message)
+                }
+            })
+        },
+        getMore(){
+            this.pageindex ++
+            this.getGoodsList()
+        },
+        goDetail(id){
+            // 使用 JS 的形式进行路由导航
+            // 注意：要区分 this.$route 和 this.$router 这两个对象
+            // 其中 this.$route 是路由 【参数对象】，所有路由中的参数， params, query 都属于它
+            // 其中 this.$router 是路由 【导航对象】，用它 可以方面的使用 JS 代码，实现路由的前进，后退，跳转到新的 URL 地址
+
+            // 1. 最简单的使用方法
+            // this.$router.push('/home/goodsinfo/' + id)
+            // 2，传递 对象
+            // this.$router.push({ path: '/home/goodsinfo/' + id })
+            // 3. 传递命名的路由
+            this.$router.push({ name: "goodsinfo", params: { id: id }})
+        }
+    }    
 }
 </script>
 <style lang="scss" scoped>

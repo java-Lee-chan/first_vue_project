@@ -58,7 +58,7 @@
 <script>
 import swiper from '../subcomponents/swiper.vue'
 // 导入 数字选择框 组件
-import numbox from '../goods/goodsinfo_numbox.vue'
+import numbox from '../subcomponents/goodsinfo_numbox.vue'
 export default {
     data(){
         return {
@@ -104,6 +104,17 @@ export default {
         addToShopCar(){
             // 添加到购物车
             this.ballFlag = !this.ballFlag
+            // 商品对象：{id: id, count: 数量, price: price,selected: 是否被选中}
+            // 拼接出一个，要保存到 store 中 cart 数组里的 商品信息对象
+            var goodsinfo = { 
+                id: this.id, 
+                count: this.selectedCount, 
+                price: this.goodsinfo.sell_price, 
+                selected: true 
+            };
+            // 调用 store 中的 mutations 来讲商品加入购物车
+            this.$store.commit('addToCart', goodsinfo)
+
         },
         beforeEnter: (el) => {
             el.style.transform = "translate(0, 0)"
@@ -136,7 +147,7 @@ export default {
         getSelectedCount(count){
             // 当子组件 把 选中的数量传递给父组件的时候，把选中的值保存到 data 上
             this.selectedCount = count;
-            console.log('数量为：'+ this.selectedCount)
+            // console.log('数量为：'+ this.selectedCount)
         }
     },
     components: {

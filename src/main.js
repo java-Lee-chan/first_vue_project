@@ -10,7 +10,9 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 // 每次刚进入 网站， 肯定会 调用 main.js 在刚调用的时候，先从本地存储中，把 购物车的数据读出来，
 // 放到 store 中
-var cart = JSON.parse(localStorage.getItem('cart') || [])
+
+// 切记调用JSON 相关方法时，字符串一定要用双引号！！
+var cart = JSON.parse(localStorage.getItem("cart")) || []
 const store = new Vuex.Store({
     state: {    // this.$store.state.***
         cart: cart, // 将购物车中的商品的数据，用一个数组存储起来, 在 cart 数组中，存储一些商品的对象
@@ -40,7 +42,7 @@ const store = new Vuex.Store({
             }
 
             // 当 更新 cart 之后，把 cart 数组，存储到 本地的 localStorage 中
-            localStorage.setItem('cart', JSON.stringify(state.cart))
+            localStorage.setItem("cart", JSON.stringify(state.cart))
         },
         updateGoodsInfo(state, goodsinfo){
             // 修改购物车中商品的数量值
@@ -53,7 +55,7 @@ const store = new Vuex.Store({
                 }
             });
             // 当修改完商品的数量，把最新的购物车数据，保存到 本地存储中
-            localStorage.setItem('cart', JSON.stringify(state.cart))
+            localStorage.setItem("cart", JSON.stringify(state.cart))
         },
         removeFromCart(state, id){
             // 根据 id，从 store 中的购物车中删除对应的商品数据
@@ -63,7 +65,7 @@ const store = new Vuex.Store({
                     return true
                 }
                 // 将删除完毕后的，最新的购物车数据，同步到 本地存储中
-                localStorage.setItem('cart', JSON.stringify(state.cart))
+                localStorage.setItem("cart", JSON.stringify(state.cart))
             })
         },
         updateGoodsSelected(state, info){
@@ -73,7 +75,7 @@ const store = new Vuex.Store({
                 }
             })
             // // 将最新的购物车状态，保存到 本地存储中
-            localStorage.setItem('cart', JSON.stringify(state.cart))
+            localStorage.setItem("cart", JSON.stringify(state.cart))
         }
     }, 
     getters: {  // this.$store.getters.***

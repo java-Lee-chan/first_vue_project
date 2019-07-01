@@ -41,6 +41,39 @@ const store = new Vuex.Store({
 
             // 当 更新 cart 之后，把 cart 数组，存储到 本地的 localStorage 中
             localStorage.setItem('cart', JSON.stringify(state.cart))
+        },
+        updateGoodsInfo(state, goodsinfo){
+            // 修改购物车中商品的数量值
+            // 分析：
+            // 
+            state.cart.some(element => {
+                if(element.id == goodsinfo.id){
+                    element.count = parseInt(goodsinfo.count)
+                    return true
+                }
+            });
+            // 当修改完商品的数量，把最新的购物车数据，保存到 本地存储中
+            localStorage.setItem('cart', JSON.stringify(state.cart))
+        },
+        removeFromCart(state, id){
+            // 根据 id，从 store 中的购物车中删除对应的商品数据
+            state.cart.some((item, i)=>{
+                if( item.id == id ){
+                    state.cart.splice(i, 1)
+                    return true
+                }
+                // 将删除完毕后的，最新的购物车数据，同步到 本地存储中
+                localStorage.setItem('cart', JSON.stringify(state.cart))
+            })
+        },
+        updateGoodsSelected(state, info){
+            state.cart.some(element=>{
+                if(element.id == info.id){
+                    element.selected = info.selected
+                }
+            })
+            // // 将最新的购物车状态，保存到 本地存储中
+            localStorage.setItem('cart', JSON.stringify(state.cart))
         }
     }, 
     getters: {  // this.$store.getters.***
@@ -57,6 +90,26 @@ const store = new Vuex.Store({
             state.cart.forEach(element => {
                 obj[element.id] = element.count
             });
+            return obj
+        },
+        getGoodsSelected(state){
+            var obj = {}
+            state.cart.forEach(element=>{
+                obj[element.id] = element.selected
+            })
+            return obj
+        },
+        getGoodsCountAndAmount(state){
+            var obj = {
+                count: 0,   // 勾选的数量
+                amount: 0   // 勾选的总量
+            }
+            state.cart.forEach(element=>{
+                if(element.selected){
+                    obj.count += element.count
+                    obj.amount += element.count * element.price
+                }
+            })
             return obj
         }
     }
